@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fitlex Profile Setup</title>
+  <link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+
+<div class="background-overlay">
+  <div class="container profile-setup">
+    <h1>Fitlex Profile Setup</h1>
+
+    <% if (typeof error !== "undefined") { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+
+    <form action="/generate-plan" method="POST">
+      <label>Full Name</label>
+      <input type="text" name="name" placeholder="Enter your name" required>
+
+      <label>Date of Birth</label>
+      <input type="date" name="dob" required>
+
+      <label>Age Group</label>
+      <select name="ageGroup" required>
+        <option value="<25">Under 25</option>
+        <option value="25-45">25–45</option>
+        <option value=">45">Above 45</option>
+      </select>
+
+      <label>Sex</label>
+      <select name="sex" required>
+        <option>Male</option>
+        <option>Female</option>
+      </select>
+
+      <label>Height (cm)</label>
+      <input type="number" name="height" placeholder="Enter height" required>
+
+      <label>Weight (kg)</label>
+      <input type="number" name="weight" placeholder="Enter weight" required>
+
+      <label>Fitness Goal</label>
+      <select name="goal" required>
+        <option value="muscle gain">Muscle Gain</option>
+        <option value="fat loss">Fat Loss</option>
+      </select>
+
+      <button type="submit" class="btn-red">Generate My Plan</button>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

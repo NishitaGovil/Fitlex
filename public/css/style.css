@@ -1,0 +1,101 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: #0f0f0f;
+  color: white;
+}
+
+/* NAVBAR */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 60px;
+  background: rgba(0,0,0,0.6);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+/* HERO SECTION */
+.hero {
+  height: 92vh;   /* slightly less to reduce bottom black area */
+
+  background:
+    linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+    url("/images/home.avif");
+
+  background-size: cover;
+  background-position: center center;  /* SHOWS IMAGE CENTER */
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;   /* vertical center */
+  justify-content: center; /* horizontal center */
+  text-align: center;
+  padding: 20px;
+}
+
+
+
+.hero-text h1 {
+  font-size: 64px;   /* bigger */
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.hero-text p {
+  font-size: 22px;
+  margin-bottom: 30px;
+}
+
+
+.btn {
+  background: #ff3c3c;
+  color: white;
+  padding: 12px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #ff1a1a;
+}
+
+/* FEATURES */
+.features {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  padding: 50px 20px;   /* reduced from 80px */
+  background: #111;
+}
+
+
+.feature {
+  text-align: center;
+  max-width: 260px;
+  padding: 20px;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+.feature:hover {
+  transform: translateY(-8px);
+}
+
+
+.feature i {
+  font-size: 40px;
+  color: #ff3c3c;
+  margin-bottom: 15px;
+}

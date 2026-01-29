@@ -1,0 +1,89 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: url("/images/gym-bg.avif") center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Dark overlay */
+.background-overlay {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Glass card */
+.container {
+  width: 450px;
+  padding: 35px;
+  border-radius: 15px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  color: white;
+}
+
+.container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ff0000;
+}
+
+/* Form */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+input, select {
+  margin-top: 6px;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+input:focus, select:focus {
+  box-shadow: 0 0 10px rgba(255,0,0,0.6);
+}
+
+/* Button */
+.btn-red {
+  margin-top: 20px;
+  padding: 14px;
+  background: #ff0000;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-red:hover {
+  background: #cc0000;
+  transform: translateY(-2px);
+}
+
+/* Error */
+.error {
+  color: #ff4d4d;
+  text-align: center;
+}

@@ -1,0 +1,128 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background:
+    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+    url("/images/auth-bg.avif");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.auth-container {
+  width: 900px;
+  height: 550px;
+  display: flex;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+/* ---------------- LEFT SIDE (WHITE AREA) ---------------- */
+.auth-left {
+  width: 50%;
+  background: #ffffff;   /* CLEAN WHITE */
+  padding: 60px 50px;
+  text-align: left;
+}
+
+.auth-left h1 {
+  font-size: 30px;
+  margin-bottom: 10px;
+  color: #000; /* black heading */
+}
+
+.social-text {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.auth-left input {
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  outline: none;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.auth-left input:focus {
+  border-color: #ff0000;
+  box-shadow: 0 0 8px rgba(255,0,0,0.4); /* subtle red glow */
+}
+
+/* SIGN UP BUTTON */
+.auth-left button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 15px;
+  border-radius: 8px;
+  border: none;
+  background: #ff0000;   /* red accent */
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.auth-left button:hover {
+  background: #cc0000;
+  transform: translateY(-2px);
+}
+
+/* ---------------- RIGHT SIDE (BLACK AREA) ---------------- */
+.auth-right {
+  width: 50%;
+  background: #000000; /* pure black */
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  text-align: center;
+}
+
+.auth-right h1 {
+  font-size: 32px;
+  margin-bottom: 15px;
+  color: #ff0000; /* red highlight text */
+}
+
+.auth-right p {
+  font-size: 15px;
+  margin-bottom: 25px;
+  color: #ddd;
+}
+
+/* SIGN IN BUTTON */
+.signup-btn {
+  padding: 12px 30px;
+  border-radius: 25px;
+  background: white;
+  color: black;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.signup-btn:hover {
+  background: #ff0000;
+  color: white;
+  box-shadow: 0 0 12px rgba(255,0,0,0.6);
+}
