@@ -62,7 +62,7 @@ body {
 /* Welcome Section */
 .dashboard-container {
   text-align: center;
-  margin-top: 100px;
+  margin-top: 30px;
 }
 
 .dashboard-container h1 {
@@ -70,5 +70,5 @@ body {
 }
 
 .dashboard-container span {
-  color: #5b4bff;
+  color: #cc0000;
 }

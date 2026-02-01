@@ -1,106 +1,120 @@
 const express = require("express");
-const session = require("express-session");
 const path = require("path");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 
 const app = express();
+const PORT = 3000;
 
-// Middleware
+// ================== CONFIG ================== //
+const JWT_SECRET = "fitlex_jwt_secret";
+
+// ================== MIDDLEWARE ================== //
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 
-app.use(session({
-  secret: "fitlex_secret_key",
-  resave: false,
-  saveUninitialized: true
-}));
-
-// View Engine
+// View engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Static Folder
+// Static files
 app.use(express.static(path.join(__dirname, "public")));
 
+// ================== AUTH MIDDLEWARE ================== //
+function isAuthenticated(req, res, next) {
+  const token = req.cookies.token;
+  if (!token) return res.redirect("/login");
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.redirect("/login");
+  }
+}
 
 // ================== ROUTES ================== //
 
-// 🏠 1. HOME PAGE
+// 🏠 HOME
 app.get("/", (req, res) => {
   res.render("home");
 });
 
-// LOGIN PAGE
+// 🔐 LOGIN PAGE
 app.get("/login", (req, res) => {
   res.render("login");
 });
 
-// SIGNUP PAGE
+// 📝 SIGNUP PAGE
 app.get("/signup", (req, res) => {
   res.render("signup");
 });
 
+// ================== AUTH HANDLERS ================== //
 
-// 📝 3. HANDLE LOGIN/SIGNUP
+// LOGIN
 app.post("/login", (req, res) => {
   const { email } = req.body;
-  req.session.user = { email };
 
-  res.redirect("/profile");   // 
+  // Later: validate user from DB
+  const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1h" });
+
+  res.cookie("token", token, { httpOnly: true });
+  res.redirect("/profile");
 });
 
+// SIGNUP
 app.post("/signup", (req, res) => {
-  const { email } = req.body;
-  req.session.user = { email };
+  const { name, email } = req.body;
 
-  res.redirect("/profile");   // 
+  // Later: save user to DB
+  const token = jwt.sign({ name, email }, JWT_SECRET, { expiresIn: "1h" });
+
+  res.cookie("token", token, { httpOnly: true });
+  res.redirect("/profile");
 });
 
-
-
-
-// 👤 4. PROFILE SETUP PAGE
-app.get("/profile", (req, res) => {
-  if (!req.session.user) return res.redirect("/login");
-  res.render("profile");   // matches profile.ejs
+// ================== PROFILE ================== //
+app.get("/profile", isAuthenticated, (req, res) => {
+  res.render("profile", { user: req.user });
 });
 
+// ================== GENERATE PLAN ================== //
+app.post("/generate-plan", isAuthenticated, (req, res) => {
+  const { fullName, ageGroup, sex, height, weight, goal } = req.body;
 
-
-// ⚡ 5. GENERATE PLAN BUTTON (redirect to dashboard)
-app.post("/generate-plan", (req, res) => {
-  const { name, age, goal } = req.body;
-
-  // Merge profile data with existing session user
-  req.session.user = {
-    ...req.session.user,
-    name,
-    age,
+  // Merge profile data into JWT
+  const updatedUser = {
+    ...req.user,
+    fullName,
+    ageGroup,
+    sex,
+    height,
+    weight,
     goal
   };
 
-  // Later AI will generate plan here
+  const token = jwt.sign(updatedUser, JWT_SECRET, { expiresIn: "1h" });
+  res.cookie("token", token, { httpOnly: true });
 
+  // AI will be added later
   res.redirect("/dashboard");
 });
 
-
-// 📊 6. DASHBOARD
-app.get("/dashboard", (req, res) => {
-  if (!req.session.user) return res.redirect("/auth");
-
-  res.render("dashboard", { user: req.session.user });
+// ================== DASHBOARD ================== //
+app.get("/dashboard", isAuthenticated, (req, res) => {
+  res.render("dashboard", { user: req.user });
 });
 
-
-// 🚪 7. LOGOUT
+// ================== LOGOUT ================== //
 app.post("/logout", (req, res) => {
-  req.session.destroy(() => {
-    res.redirect("/");
-  });
+  res.clearCookie("token");
+  res.redirect("/");
 });
 
-
-// Server Start
-app.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
+// ================== SERVER ================== //
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

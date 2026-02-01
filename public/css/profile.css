@@ -6,7 +6,8 @@
 }
 
 body {
-  height: 100vh;
+  overflow: auto;
+  min-height: 100vh;
   background: url("/images/gym-bg.avif") center/cover no-repeat;
   display: flex;
   justify-content: center;

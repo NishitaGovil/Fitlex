@@ -12,12 +12,11 @@
     <div class="logo">Fitlex</div>
 
     <div class="profile-section">
-      <img src="/images/profile-icon.png" class="profile-icon" onclick="toggleMenu()" />
+      <img src="https://www.shutterstock.com/image-vector/profile-icon-260nw-582976060.jpg" class="profile-icon" onclick="toggleMenu()" />
 
       <div id="profileMenu" class="profile-menu">
         <p><strong>Name:</strong> <%= user.name %></p>
         <p><strong>Email:</strong> <%= user.email %></p>
-        <p><strong>Age:</strong> <%= user.age %></p>
         <p><strong>Goal:</strong> <%= user.goal %></p>
 
         <form action="/logout" method="POST">
@@ -29,7 +28,7 @@
 
   <!-- Welcome Section -->
   <div class="dashboard-container">
-    <h1>Welcome, <span><%= user.name %></span> 👋</h1>
+    <h1>Welcome, <span><%= user.name %></span> </h1>
   </div>
 
   <script>
