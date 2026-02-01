@@ -1,0 +1,74 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: #1e1e2f;
+  color: white;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.profile-section {
+  position: relative;
+}
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Dropdown Menu */
+.profile-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 55px;
+  background: white;
+  color: black;
+  width: 220px;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.profile-menu.show {
+  display: block;
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  background: crimson;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Welcome Section */
+.dashboard-container {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.dashboard-container h1 {
+  font-size: 32px;
+}
+
+.dashboard-container span {
+  color: #5b4bff;
+}

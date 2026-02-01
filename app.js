@@ -1,63 +1,106 @@
 const express = require("express");
+const session = require("express-session");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
 
-/* ---------------- MIDDLEWARE ---------------- */
-
-// To read form data (VERY IMPORTANT)
+// Middleware
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// To serve CSS, images, JS
-app.use(express.static(path.join(__dirname, "public")));
+app.use(session({
+  secret: "fitlex_secret_key",
+  resave: false,
+  saveUninitialized: true
+}));
 
-/* ---------------- VIEW ENGINE ---------------- */
-
+// View Engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-/* ---------------- ROUTES ---------------- */
+// Static Folder
+app.use(express.static(path.join(__dirname, "public")));
 
-// Home (optional)
+
+// ================== ROUTES ================== //
+
+// 🏠 1. HOME PAGE
 app.get("/", (req, res) => {
-  res.render("home"); // home.ejs
+  res.render("home");
 });
 
-
-// Login page
+// LOGIN PAGE
 app.get("/login", (req, res) => {
   res.render("login");
 });
 
-// Signup page
+// SIGNUP PAGE
 app.get("/signup", (req, res) => {
   res.render("signup");
 });
 
-// Profile setup page
+
+// 📝 3. HANDLE LOGIN/SIGNUP
+app.post("/login", (req, res) => {
+  const { email } = req.body;
+  req.session.user = { email };
+
+  res.redirect("/profile");   // 
+});
+
+app.post("/signup", (req, res) => {
+  const { email } = req.body;
+  req.session.user = { email };
+
+  res.redirect("/profile");   // 
+});
+
+
+
+
+// 👤 4. PROFILE SETUP PAGE
 app.get("/profile", (req, res) => {
-  res.render("profile");
+  if (!req.session.user) return res.redirect("/login");
+  res.render("profile");   // matches profile.ejs
 });
 
-/* 🔥 THIS IS THE ROUTE YOU WERE MISSING */
+
+
+// ⚡ 5. GENERATE PLAN BUTTON (redirect to dashboard)
 app.post("/generate-plan", (req, res) => {
-  console.log("Form Data Received:", req.body);
+  const { name, age, goal } = req.body;
 
-  const { name, dob, ageGroup, sex, height, weight, goal } = req.body;
+  // Merge profile data with existing session user
+  req.session.user = {
+    ...req.session.user,
+    name,
+    age,
+    goal
+  };
 
-  
-  res.send(`
-    <h1>Plan Generated Successfully ✅</h1>
-    <p>Name: ${name}</p>
-    <p>Age Group: ${ageGroup}</p>
-    <p>Goal: ${goal}</p>
-    <a href="/profile">Go Back</a>
-  `);
+  // Later AI will generate plan here
+
+  res.redirect("/dashboard");
 });
 
 
+// 📊 6. DASHBOARD
+app.get("/dashboard", (req, res) => {
+  if (!req.session.user) return res.redirect("/auth");
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  res.render("dashboard", { user: req.session.user });
+});
+
+
+// 🚪 7. LOGOUT
+app.post("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.redirect("/");
+  });
+});
+
+
+// Server Start
+app.listen(3000, () => {
+  console.log("Server running on http://localhost:3000");
 });
