@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Weekly Workout Plan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .day-card {
+      background: #ffffff;
+      padding: 15px;
+      margin: 10px auto;
+      max-width: 600px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .workout {
+      font-size: 16px;
+    }
+    .progress, .motivation {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    button {
+      display: block;
+      margin: 25px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🏋️ AI Generated Weekly Workout Plan</h1>
+
+  <% 
+    const completed = weeklyPlan.filter(d => d.completed).length;
+  %>
+
+  <div class="progress">
+    ✅ Progress: <%= completed %> / 7 days completed
+  </div>
+
+  <form action="/save-progress" method="POST">
+
+    <% weeklyPlan.forEach(day => { %>
+      <div class="day-card">
+        <div class="workout">
+          <strong><%= day.day %></strong><br>
+          <%= day.workout %>
+        </div>
+
+        <div>
+          <input 
+            type="checkbox"
+            name="completedDays[]"
+            value="<%= day.day %>"
+            <%= day.completed ? "checked" : "" %>
+          >
+        </div>
+      </div>
+    <% }) %>
+
+    <button type="submit">Save Progress</button>
+  </form>
+
+  <div class="motivation">
+    <% if (completed === 0) { %>
+      🌱 Start today, your body will thank you!
+    <% } else if (completed < 4) { %>
+      🔥 Great going! Keep the momentum!
+    <% } else if (completed < 7) { %>
+      💪 Almost there! Finish strong!
+    <% } else { %>
+      🏆 Perfect week! You’re unstoppable!
+    <% } %>
+  </div>
+
+</body>
+</html>

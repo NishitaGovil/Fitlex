@@ -2,23 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fitlex | Dashboard</title>
   <link rel="stylesheet" href="/css/dashboard.css" />
 </head>
 <body>
 
-  <!-- Top Navbar -->
   <div class="navbar">
     <div class="logo">Fitlex</div>
-
     <div class="profile-section">
       <img src="https://www.shutterstock.com/image-vector/profile-icon-260nw-582976060.jpg" class="profile-icon" onclick="toggleMenu()" />
-
       <div id="profileMenu" class="profile-menu">
         <p><strong>Name:</strong> <%= user.name %></p>
         <p><strong>Email:</strong> <%= user.email %></p>
         <p><strong>Goal:</strong> <%= user.goal %></p>
-
         <form action="/logout" method="POST">
           <button type="submit" class="logout-btn">Logout</button>
         </form>
@@ -26,12 +23,52 @@
     </div>
   </div>
 
-  <!-- Welcome Section -->
   <div class="dashboard-container">
-    <h1>Welcome, <span><%= user.name %></span> </h1>
+    <h1>Welcome, <span><%= user.name %></span></h1>
+
+    <!-- Link to generate AI weekly plan -->
+    <a href="/ai-plan" class="generate-plan-btn">Generate AI Weekly Plan 🏋️</a>
+
+    <% if (typeof weeklyPlan !== "undefined" && weeklyPlan.length > 0) { %>
+    <p>✅ Progress: <span id="completedCount">0</span> / 7 days completed</p>
+
+    <form action="/save-progress" method="POST">
+      <% weeklyPlan.forEach((day, index) => { %>
+        <div class="day-card">
+          <div class="workout-title"><%= day.day %>: <%= day.workout %></div>
+
+          <% if(day.exercises) { %>
+            <ul class="exercise-list">
+              <% day.exercises.forEach(ex => { %>
+                <li><%= ex %></li>
+              <% }) %>
+            </ul>
+          <% } %>
+
+          <div class="card-footer">
+            <small class="motivation-text">"<%= day.motivation %>"</small>
+            <input 
+              type="checkbox" 
+              name="completedDays[]" 
+              value="<%= day.day %>" 
+              class="day-checkbox"
+              onchange="updateProgress()"
+            >
+          </div>
+        </div>
+      <% }) %>
+
+      <button type="submit" class="save-btn">Save Progress ✅</button>
+    </form>
+    <% } %>
+
+    <div id="dynamicMotivation" class="motivation-box">
+      🌱 Start today, your body will thank you!
+    </div>
   </div>
 
   <script>
+    // Profile Dropdown
     function toggleMenu() {
       document.getElementById("profileMenu").classList.toggle("show");
     }
@@ -44,7 +81,27 @@
         }
       }
     }
-  </script>
 
+    // Progress Bar & Motivation
+    function updateProgress() {
+      const checkboxes = document.querySelectorAll('.day-checkbox');
+      const completed = Array.from(checkboxes).filter(cb => cb.checked).length;
+      document.getElementById("completedCount").innerText = completed;
+
+      const messages = [
+        "🌟 Consistency is better than perfection!",
+        "🔥 Great start! You've got this!",
+        "💪 Two days down! Feeling stronger?",
+        "🚀 Almost halfway! Keep the momentum!",
+        "⚡ You're a machine! Keep going!",
+        "🏆 So close to a perfect week!",
+        "👑 Final stretch! Finish strong!",
+        "🎉 BOOM! Week completed! You're a legend!"
+      ];
+
+      document.getElementById("dynamicMotivation").innerText = messages[completed];
+    }
+  </script>
 </body>
 </html>
+

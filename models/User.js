@@ -16,4 +16,3 @@ const userSchema = new mongoose.Schema({
   fitnessGoal: String
 }, { timestamps: true });
 module.exports = mongoose.model("User", userSchema);
-
