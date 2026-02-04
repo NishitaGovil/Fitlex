@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fitlex | Dashboard</title>
   <link rel="stylesheet" href="/css/dashboard.css" />
+  <style>
+    .dashboard-container { max-width: 900px; margin: 30px auto; padding: 20px; background: white; border-radius: 10px; }
+    h1 { text-align: center; color: #222; }
+    .day-card { background: #f1f1f1; padding: 15px; margin-bottom: 15px; border-radius: 8px; }
+    .workout-title { font-weight: bold; margin-bottom: 8px; }
+    .exercise-list { margin: 5px 0; padding-left: 20px; }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+    .motivation-text { font-style: italic; font-size: 0.9rem; }
+    .save-btn, .generate-plan-btn { margin-top: 20px; padding: 10px 15px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
+    .motivation-box { margin-top: 20px; padding: 15px; background: #ffeaa7; border-radius: 8px; text-align: center; font-weight: bold; }
+  </style>
 </head>
 <body>
 
@@ -26,82 +37,113 @@
   <div class="dashboard-container">
     <h1>Welcome, <span><%= user.name %></span></h1>
 
-    <!-- Link to generate AI weekly plan -->
-    <a href="/ai-plan" class="generate-plan-btn">Generate AI Weekly Plan 🏋️</a>
+    <!-- Button to generate AI weekly plan -->
+    <a href="#" class="generate-plan-btn" onclick="generateAIPlan()">Generate AI Weekly Plan 🏋️</a>
 
-    <% if (typeof weeklyPlan !== "undefined" && weeklyPlan.length > 0) { %>
-    <p>✅ Progress: <span id="completedCount">0</span> / 7 days completed</p>
+    <!-- Weekly Plan Container -->
+    <div id="weeklyPlanContainer">
+      <% if (typeof weeklyPlan !== "undefined" && weeklyPlan.length > 0) { %>
+        <p>✅ Progress: <span id="completedCount">0</span> / 7 days completed</p>
 
-    <form action="/save-progress" method="POST">
-      <% weeklyPlan.forEach((day, index) => { %>
-        <div class="day-card">
-          <div class="workout-title"><%= day.day %>: <%= day.workout %></div>
+        <form action="/save-progress" method="POST" id="weeklyPlanForm">
+          <% weeklyPlan.forEach(day => { %>
+            <div class="day-card">
+              <div class="workout-title"><%= day.day %>: <%= day.workout %></div>
+              <ul class="exercise-list">
+                <% day.exercises.forEach(ex => { %>
+                  <li><%= ex %></li>
+                <% }) %>
+              </ul>
+              <div class="card-footer">
+                <small class="motivation-text">"<%= day.motivation %>"</small>
+                <input 
+                  type="checkbox" 
+                  name="completedDays[]" 
+                  class="day-checkbox"
+                  onchange="updateProgress()"
+                  <% if(day.completed) { %> checked <% } %>
+                >
+              </div>
+            </div>
+          <% }) %>
 
-          <% if(day.exercises) { %>
-            <ul class="exercise-list">
-              <% day.exercises.forEach(ex => { %>
-                <li><%= ex %></li>
-              <% }) %>
-            </ul>
-          <% } %>
-
-          <div class="card-footer">
-            <small class="motivation-text">"<%= day.motivation %>"</small>
-            <input 
-              type="checkbox" 
-              name="completedDays[]" 
-              value="<%= day.day %>" 
-              class="day-checkbox"
-              onchange="updateProgress()"
-            >
-          </div>
-        </div>
-      <% }) %>
-
-      <button type="submit" class="save-btn">Save Progress ✅</button>
-    </form>
-    <% } %>
+          <button type="submit" class="save-btn">Save Progress ✅</button>
+        </form>
+      <% } %>
+    </div>
 
     <div id="dynamicMotivation" class="motivation-box">
       🌱 Start today, your body will thank you!
     </div>
   </div>
 
-  <script>
-    // Profile Dropdown
-    function toggleMenu() {
-      document.getElementById("profileMenu").classList.toggle("show");
+<script>
+  // Profile Dropdown
+  function toggleMenu() {
+    document.getElementById("profileMenu").classList.toggle("show");
+  }
+
+  window.onclick = function(e) {
+    if (!e.target.matches('.profile-icon')) {
+      let menu = document.getElementById("profileMenu");
+      if (menu.classList.contains("show")) menu.classList.remove("show");
     }
+  }
 
-    window.onclick = function(e) {
-      if (!e.target.matches('.profile-icon')) {
-        let menu = document.getElementById("profileMenu");
-        if (menu.classList.contains("show")) {
-          menu.classList.remove("show");
-        }
-      }
-    }
+  // Progress Bar & Motivation
+  function updateProgress() {
+    const checkboxes = document.querySelectorAll('.day-checkbox');
+    const completed = Array.from(checkboxes).filter(cb => cb.checked).length;
+    document.getElementById("completedCount").innerText = completed;
 
-    // Progress Bar & Motivation
-    function updateProgress() {
-      const checkboxes = document.querySelectorAll('.day-checkbox');
-      const completed = Array.from(checkboxes).filter(cb => cb.checked).length;
-      document.getElementById("completedCount").innerText = completed;
+    const messages = [
+      "🌟 Consistency is better than perfection!",
+      "🔥 Great start! You've got this!",
+      "💪 Two days down! Feeling stronger?",
+      "🚀 Almost halfway! Keep the momentum!",
+      "⚡ You're a machine! Keep going!",
+      "🏆 So close to a perfect week!",
+      "👑 Final stretch! Finish strong!",
+      "🎉 BOOM! Week completed! You're a legend!"
+    ];
 
-      const messages = [
-        "🌟 Consistency is better than perfection!",
-        "🔥 Great start! You've got this!",
-        "💪 Two days down! Feeling stronger?",
-        "🚀 Almost halfway! Keep the momentum!",
-        "⚡ You're a machine! Keep going!",
-        "🏆 So close to a perfect week!",
-        "👑 Final stretch! Finish strong!",
-        "🎉 BOOM! Week completed! You're a legend!"
-      ];
+    document.getElementById("dynamicMotivation").innerText = messages[completed] || "🌱 Start today, your body will thank you!";
+  }
 
-      document.getElementById("dynamicMotivation").innerText = messages[completed];
-    }
-  </script>
+  // Generate AI Plan dynamically
+  function generateAIPlan() {
+    const weeklyPlan = [
+      { day: "Day 1", workout: "Basic full-body workout", exercises: ["Walking 20 mins","Bodyweight exercises","Chest and Triceps"], motivation: "Every step counts 🚀", completed: false },
+      { day: "Day 2", workout: "Cardio full-body workout", exercises: ["Walking 20 mins","Bodyweight exercises","Back and Biceps"], motivation: "🌟 Consistency is better than perfection!", completed: false },
+      { day: "Day 3", workout: "Strength full-body workout", exercises: ["Walking 20 mins","Bodyweight exercises","Legs"], motivation: "💪 Keep pushing your limits!", completed: false },
+      { day: "Day 4", workout: "Balance full-body workout", exercises: ["Walking 20 mins","Bodyweight exercises","Shoulders and Abs"], motivation: "🧘‍♀️ Focus on your form and balance!", completed: false },
+      { day: "Day 5", workout: "HIIT full-body workout", exercises: ["Walking 20 mins","Bodyweight exercises","Full Body HIIT"], motivation: "🔥 Push your limits and embrace the challenge!", completed: false },
+      { day: "Day 6", workout: "Core + Cardio full-body workout", exercises: ["Walking 20 mins","Bodyweight exercises","Core + Cardio"], motivation: "🔥 Keep up the momentum!", completed: false },
+      { day: "Day 7", workout: "Active Recovery full-body workout", exercises: ["Walking 20 mins","Bodyweight exercises","Active Recovery"], motivation: "🧘‍♀️ Rest and recharge!", completed: false }
+    ];
+
+    const container = document.getElementById("weeklyPlanContainer");
+    container.innerHTML = `
+      <p>✅ Progress: <span id="completedCount">0</span> / 7 days completed</p>
+      <form action="/save-progress" method="POST" id="weeklyPlanForm">
+        ${weeklyPlan.map(day => `
+          <div class="day-card">
+            <div class="workout-title">${day.day}: ${day.workout}</div>
+            <ul class="exercise-list">
+              ${day.exercises.map(ex => `<li>${ex}</li>`).join('')}
+            </ul>
+            <div class="card-footer">
+              <small class="motivation-text">"${day.motivation}"</small>
+              <input type="checkbox" name="completedDays[]" class="day-checkbox" onchange="updateProgress()">
+            </div>
+          </div>
+        `).join('')}
+        <button type="submit" class="save-btn">Save Progress ✅</button>
+      </form>
+    `;
+    updateProgress();
+  }
+</script>
+
 </body>
 </html>
-
